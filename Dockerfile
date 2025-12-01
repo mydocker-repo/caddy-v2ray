@@ -4,7 +4,8 @@ WORKDIR /root
 RUN echo "Asia/Shanghai" > /etc/timezone
 RUN echo "alias ll='ls -la'" > /root/.bashrc && \
     echo "PS1='\[\e[1;32m\][\W]\$\[\e[0m\] '" >> /root/.bashrc
-
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY config.json /etc/v2ray/config.json
 EXPOSE 80
 EXPOSE 1080
 EXPOSE 1081
