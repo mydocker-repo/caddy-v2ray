@@ -75,6 +75,7 @@ cat <<EOF >"/usr/share/caddy/$UUID.html"
 vmess://$VMESS
 
 </pre>
+<a href="/addCFIP.html">CF域名：CFIP扩展节点</a>
 EOF
 
 echo
