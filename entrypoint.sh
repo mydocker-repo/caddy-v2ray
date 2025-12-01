@@ -58,7 +58,7 @@ cat <<EOF |base64 |tr -d '\n'
   "net": "ws",
   "type": "none",
   "host": "$DOMAIN",
-  "path": "/vmess",
+  "path": "/vmess-ws",
   "tls": "tls",
   "sni": "",
   "alpn": "",
@@ -68,7 +68,6 @@ cat <<EOF |base64 |tr -d '\n'
 EOF
 )
 
-env
 
 cat <<EOF >"/usr/share/caddy/$UUID.html"
 <pre>
