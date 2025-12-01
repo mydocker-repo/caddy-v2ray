@@ -4,7 +4,11 @@ WORKDIR /root
 RUN echo "Asia/Shanghai" > /etc/timezone
 RUN echo "alias ll='ls -la'" > /root/.bashrc && \
     echo "PS1='\[\e[1;32m\][\W]\$\[\e[0m\] '" >> /root/.bashrc
-    
+
+EXPOSE 80
+EXPOSE 1080
+EXPOSE 1081
+
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod 755 /entrypoint.sh
 
