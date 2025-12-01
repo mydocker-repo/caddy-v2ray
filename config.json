@@ -1,0 +1,54 @@
+{
+  "inbounds": [
+    {
+      "port": 1080,
+      "protocol": "vmess",
+      "settings": {
+        "clients": [
+          {
+            "id": "a66ad549-6f60-48c8-a823-619aba24fc3f",
+            "alterId": 0
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/vmess-ws"
+        }
+      }
+    },
+    {
+        "port": 1081,
+        "protocol": "vmess",
+        "settings": {
+            "clients": [
+                {
+                    "id": "96b785ec-3f7e-4602-8877-6e77839ef79c"
+                }
+            ]
+        },
+        "streamSettings": {
+            "network": "tcp",
+            "security": "tls",
+            "tlsSettings": {
+                "path":"/vmess-tcp",
+              "alpn": [
+				"http/1.1"
+			],
+			"certificates": [
+				{
+					"certificateFile": "/etc/v2ray/server.crt",
+					"keyFile": "/etc/v2ray/server.key"
+				}
+			]
+            }
+        }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom"
+    }
+  ]
+}
