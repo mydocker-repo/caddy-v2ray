@@ -77,10 +77,12 @@ vmess://$VMESS
 </pre>
 EOF
 
-echo "\n访问:"
+echo
+echo "访问:"
 echo "https://$DOMAIN/$UUID.html"
 echo ""
-
+echo "vmess://$VMESS"
+echo
 
 
 # 执行传入的命令（通常是 crond -f）
