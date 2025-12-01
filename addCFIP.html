@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>V2Ray 节点生成器</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+        <!-- Tailwind 配置 -->
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            primary: '#3B82F6',
+                            secondary: '#10B981',
+                            dark: '#1E293B',
+                            light: '#F8FAFC'
+                        },
+                        fontFamily: {
+                            sans: ['Inter', 'system-ui', 'sans-serif'],
+                        },
+                    },
+                }
+            }
+        </script>
+        <style type="text/tailwindcss"> @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-gradient-blue {
+                background: linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%);
+            }
+            .transition-all-300 {
+                transition: all 300ms ease-in-out;
+            }
+            .shadow-custom {
+                box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.1), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+            }
+        }
+    </style>
+    </head>
+
+    <body class="bg-slate-50 min-h-screen font-sans text-slate-800">
+        <!-- 主体功能直接开始 -->
+        <!-- 主要内容 -->
+        <main class="container mx-auto px-4 md:px-6 py-4 max-w-4xl">
+            <div class="bg-white rounded-xl shadow-custom p-6 mb-8">
+                <div class="mb-8">
+                    <h2 class="text-xl font-semibold text-primary mb-6 flex items-center">
+                        <i class="fa fa-cogs mr-2"></i> 节点生成工具
+                    </h2>
+                    <!-- 原始链接输入 -->
+                    <div class="mb-6">
+                        <label for="original-link" class="block text-sm font-medium text-slate-700 mb-2"> 原始链接 (v2rayN 或
+                            v2rayNG)（每行一个） </label>
+                        <div class="flex flex-col">
+                            <textarea id="original-link"
+                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 min-h-[40px] text-sm overflow-x-auto whitespace-pre"
+                                placeholder="请输入V2Ray节点链接，每行一个..." rows="1"></textarea>
+                            <div class="flex space-x-4 text-xs mt-1">
+                                <button id="copy-link-text"
+                                    class="text-primary hover:text-primary/80 transition-all-300">复制</button>
+                                <button id="clear-link-text"
+                                    class="text-slate-400 hover:text-red-500 transition-all-300">清空</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 优选CFIP文本域 -->
+                    <div class="mb-6">
+                        <label for="cf-ips" class="block text-sm font-medium text-slate-700 mb-2"> 优选CFIP </label>
+                        <div class="flex flex-col">
+                            <textarea id="cf-ips"
+                                class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all-300 min-h-[120px] text-sm"
+                                placeholder="请输入优选的CloudFlare IP，每行一个..."></textarea>
+                            <div class="flex space-x-4 text-xs mt-1">
+                                <button id="copy-ips-text"
+                                    class="text-primary hover:text-primary/80 transition-all-300">复制</button>
+                                <button id="clear-ips-text"
+                                    class="text-slate-400 hover:text-red-500 transition-all-300">清空</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 生成按钮 -->
+                    <div class="flex justify-center mb-6">
+                        <button id="generate-btn"
+                            class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all-300 flex items-center">
+                            <i class="fa fa-refresh mr-2"></i> 生成扩展节点 </button>
+                    </div>
+                    <!-- 生成的新节点文本域 -->
+                    <div class="mb-4">
+                        <label for="new-nodes" class="block text-sm font-medium text-slate-700 mb-2"> 生成的新节点 </label>
+                        <div class="flex flex-col">
+                            <textarea id="new-nodes"
+                                class="w-full px-4 py-3 rounded-lg border border-slate-300 bg-slate-50 min-h-[350px] text-sm overflow-x-auto whitespace-pre overflow-y-auto"
+                                readonly placeholder="生成的新节点将显示在这里..."></textarea>
+                            <div class="flex space-x-4 text-xs mt-1">
+                                <button id="copy-all-text"
+                                    class="text-primary hover:text-primary/80 transition-all-300">复制全部</button>
+                                <button id="clear-nodes-text"
+                                    class="text-slate-400 hover:text-red-500 transition-all-300">清空</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 使用说明 -->
+            <div class="bg-white rounded-xl shadow-custom p-6">
+                <h2 class="text-xl font-semibold text-primary mb-4 flex items-center">
+                    <i class="fa fa-info-circle mr-2"></i> 使用说明
+                </h2>
+                <ul class="space-y-2 text-sm text-slate-700">
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-secondary mt-0.5 mr-2"></i>
+                        <span>在"原始链接"中输入一个有效的V2Ray节点链接（支持v2rayN和v2rayNG格式）</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-secondary mt-0.5 mr-2"></i>
+                        <span>在"优选CFIP"中输入您测试好的CloudFlare IP，每行一个</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-secondary mt-0.5 mr-2"></i>
+                        <span>点击"生成扩展节点"按钮，系统将为每个CFIP生成对应的节点链接</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fa fa-check-circle text-secondary mt-0.5 mr-2"></i>
+                        <span>点击任意文本框或文本域可自动复制其中的内容</span>
+                    </li>
+                </ul>
+            </div>
+        </main>
+        <!-- 页脚 -->
+        <footer class="bg-dark text-slate-400 py-6 mt-12">
+            <div class="container mx-auto px-4 text-center text-sm">
+                <p>V2Ray 节点生成器 &copy; 2024</p>
+            </div>
+        </footer>
+        <!-- 通知提示 -->
+        <div id="toast"
+            class="fixed bottom-6 right-6 bg-secondary text-white px-4 py-2 rounded-lg shadow-lg opacity-0 transition-all-300 flex items-center">
+            <i class="fa fa-check-circle mr-2"></i>
+            <span id="toast-message">复制成功</span>
+        </div>
+        <!-- JavaScript -->
+        <script>
+            // 显示提示消息
+            function showToast(message) {
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toast-message');
+                toastMessage.textContent = message;
+                toast.style.opacity = '1';
+
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                }, 2000);
+            }
+
+            // 设置点击选中文本功能
+            function setupAutoSelect(element) {
+                element.addEventListener('click', () => {
+                    const text = element.value;
+                    if (text) {
+                        element.focus();
+                        element.select();
+                    }
+                });
+            }
+
+            // 通用复制函数
+            async function copyToClipboard(text, successMessage = '复制成功', errorMessage = '复制失败，请手动复制') {
+                if (text) {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                        showToast(successMessage);
+                        return true;
+                    } catch (err) {
+                        // 降级方案：使用传统的复制方法
+                        const textArea = document.createElement('textarea');
+                        textArea.value = text;
+                        textArea.style.position = 'fixed';
+                        textArea.style.left = '-999999px';
+                        textArea.style.top = '-999999px';
+                        document.body.appendChild(textArea);
+                        textArea.focus();
+                        textArea.select();
+
+                        try {
+                            document.execCommand('copy');
+                            showToast(successMessage);
+                            return true;
+                        } catch (err) {
+                            showToast(errorMessage);
+                            return false;
+                        } finally {
+                            document.body.removeChild(textArea);
+                        }
+                    }
+                }
+                return false;
+            }
+
+            // 获取DOM元素
+            const originalLinkInput = document.getElementById('original-link');
+            const cfIpsTextarea = document.getElementById('cf-ips');
+            const newNodesTextarea = document.getElementById('new-nodes');
+            const generateBtn = document.getElementById('generate-btn');
+
+            // 设置点击选中文本功能
+            setupAutoSelect(originalLinkInput);
+            setupAutoSelect(cfIpsTextarea);
+            setupAutoSelect(newNodesTextarea);
+
+            // 清空按钮功能
+            document.getElementById('clear-link-text').addEventListener('click', () => {
+                originalLinkInput.value = '';
+                originalLinkInput.focus();
+            });
+
+            document.getElementById('clear-ips-text').addEventListener('click', () => {
+                cfIpsTextarea.value = '';
+                cfIpsTextarea.focus();
+            });
+
+            document.getElementById('clear-nodes-text').addEventListener('click', () => {
+                newNodesTextarea.value = '';
+            });
+
+            // 复制按钮功能
+            document.getElementById('copy-link-text').addEventListener('click', () => {
+                copyToClipboard(originalLinkInput.value);
+            });
+
+            document.getElementById('copy-ips-text').addEventListener('click', () => {
+                copyToClipboard(cfIpsTextarea.value);
+            });
+
+            document.getElementById('copy-all-text').addEventListener('click', () => {
+                copyToClipboard(newNodesTextarea.value, '全部复制成功');
+            });
+
+            // Base64编码和解码函数（处理URL安全的Base64）
+            function base64Decode(str) {
+                // 替换URL安全的字符
+                str = str.replace(/-/g, '+').replace(/_/g, '/');
+                // 补充缺失的填充字符
+                while (str.length % 4) str += '=';
+
+                try {
+                    return decodeURIComponent(escape(atob(str)));
+                } catch (e) {
+                    throw new Error('Base64解码失败');
+                }
+            }
+
+            function base64Encode(str) {
+                try {
+                    return btoa(unescape(encodeURIComponent(str)))
+                        .replace(/\+/g, '-')
+                        .replace(/\//g, '_')
+                        .replace(/=+$/, '');
+                } catch (e) {
+                    throw new Error('Base64编码失败');
+                }
+            }
+
+            // 解析V2Ray节点链接
+            function parseV2RayLink(link) {
+                // 检查是否为v2ray协议链接
+                if (link.startsWith('vmess://')) {
+                    const encoded = link.substring(8);
+                    try {
+                        const decoded = base64Decode(encoded);
+                        const config = JSON.parse(decoded);
+                        return {
+                            type: 'vmess',
+                            config: config,
+                            original: link
+                        };
+                    } catch (e) {
+                        throw new Error('Vmess链接格式错误');
+                    }
+                } else if (link.startsWith('vless://')) {
+                    // VLESS链接格式：vless://uuid@host:port?encryption=none&security=xtls&flow=xtls-rprx-direct#remarks
+                    const data = link.substring(8);
+                    try {
+                        // 解析基本信息
+                        const [credentials, rest] = data.split('@');
+                        const [hostAndPort, queryAndRemarks] = rest.split('?');
+                        const [host, port] = hostAndPort.split(':');
+
+                        // 解析查询参数
+                        let queryParams = {};
+                        let remarks = '';
+
+                        if (queryAndRemarks) {
+                            const [query, remarksEncoded] = queryAndRemarks.split('#');
+                            if (query) {
+                                query.split('&').forEach(param => {
+                                    const [key, value] = param.split('=');
+                                    queryParams[key] = decodeURIComponent(value);
+                                });
+                            }
+                            if (remarksEncoded) {
+                                remarks = decodeURIComponent(remarksEncoded);
+                            }
+                        }
+
+                        return {
+                            type: 'vless',
+                            config: {
+                                uuid: credentials,
+                                address: host,
+                                port: parseInt(port),
+                                // 保存所有查询参数
+                                encryption: queryParams.encryption || 'none',
+                                security: queryParams.security || '',
+                                flow: queryParams.flow || '',
+                                network: queryParams.network || '',
+                                sni: queryParams.sni || '',
+                                path: queryParams.path || '',
+                                alpn: queryParams.alpn || '',
+                                host: queryParams.host || '',
+                                // 保存完整的查询参数对象，确保不丢失任何信息
+                                queryParams: queryParams,
+                                remarks: remarks
+                            },
+                            original: link
+                        };
+                    } catch (e) {
+                        throw new Error('Vless链接格式错误');
+                    }
+                } else if (link.startsWith('trojan://')) {
+                    // Trojan链接格式：trojan://password@host:port?query_parameters#remarks
+                    const data = link.substring(8);
+                    try {
+                        // 解析基本信息
+                        const [credentials, rest] = data.split('@');
+                        const [hostAndPort, queryAndRemarks] = rest.split('?');
+                        const [host, port] = hostAndPort.split(':');
+
+                        // 解析查询参数
+                        let queryParams = {};
+                        let remarks = '';
+
+                        if (queryAndRemarks) {
+                            const [query, remarksEncoded] = queryAndRemarks.split('#');
+                            if (query) {
+                                query.split('&').forEach(param => {
+                                    const [key, value] = param.split('=');
+                                    queryParams[key] = decodeURIComponent(value);
+                                });
+                            }
+                            if (remarksEncoded) {
+                                remarks = decodeURIComponent(remarksEncoded);
+                            }
+                        }
+
+                        return {
+                            type: 'trojan',
+                            config: {
+                                password: credentials,
+                                address: host,
+                                port: parseInt(port),
+                                // 保存所有查询参数
+                                security: queryParams.security || '',
+                                sni: queryParams.sni || '',
+                                alpn: queryParams.alpn || '',
+                                type: queryParams.type || '',
+                                path: queryParams.path || '',
+                                host: queryParams.host || '',
+                                // 保存完整的查询参数对象，确保不丢失任何信息
+                                queryParams: queryParams,
+                                remarks: remarks
+                            },
+                            original: link
+                        };
+                    } catch (e) {
+                        throw new Error('Trojan链接格式错误');
+                    }
+                }
+                throw new Error('不支持的链接格式');
+            }
+
+            // 生成新的V2Ray链接
+            function generateNewLink(originalConfig, newIp) {
+                if (originalConfig.type === 'vmess') {
+                    const newConfig = JSON.parse(JSON.stringify(originalConfig.config));
+                    newConfig.add = newIp; // 替换IP
+                    const encoded = base64Encode(JSON.stringify(newConfig));
+                    return 'vmess://' + encoded;
+                } else if (originalConfig.type === 'vless') {
+                    const config = originalConfig.config;
+                    let newLink = `vless://${config.uuid}@${newIp}:${config.port}`;
+
+                    // 添加查询参数
+                    const params = [];
+
+                    // 优先使用保存的完整queryParams对象，确保不丢失任何参数
+                    if (config.queryParams) {
+                        // 遍历所有原始查询参数
+                        for (const [key, value] of Object.entries(config.queryParams)) {
+                            // 确保value不为undefined或null
+                            if (value !== undefined && value !== null) {
+                                params.push(`${key}=${value}`);
+                            }
+                        }
+                    } else {
+                        // 回退方案：手动添加重要参数
+                        if (config.encryption) params.push(`encryption=${config.encryption}`);
+                        if (config.security) params.push(`security=${config.security}`);
+                        if (config.flow) params.push(`flow=${config.flow}`);
+                        if (config.network) params.push(`network=${config.network}`);
+                        if (config.sni) params.push(`sni=${config.sni}`);
+                        if (config.path) params.push(`path=${config.path}`);
+                        if (config.alpn) params.push(`alpn=${config.alpn}`);
+                        if (config.host) params.push(`host=${config.host}`);
+                    }
+
+                    if (params.length > 0) {
+                        newLink += '?' + params.join('&');
+                    }
+
+                    // 添加备注
+                    if (config.remarks) {
+                        newLink += '#' + config.remarks + '_' + newIp;
+                    }
+
+                    return newLink;
+                } else if (originalConfig.type === 'trojan') {
+                    const config = originalConfig.config;
+                    let newLink = `trojan://${config.password}@${newIp}:${config.port}`;
+
+                    // 添加查询参数
+                    const params = [];
+
+                    // 优先使用保存的完整queryParams对象，确保不丢失任何参数
+                    if (config.queryParams) {
+                        // 遍历所有原始查询参数
+                        for (const [key, value] of Object.entries(config.queryParams)) {
+                            // 确保value不为undefined或null
+                            if (value !== undefined && value !== null) {
+                                params.push(`${key}=${value}`);
+                            }
+                        }
+                    } else {
+                        // 回退方案：手动添加重要参数
+                        if (config.security) params.push(`security=${config.security}`);
+                        if (config.sni) params.push(`sni=${config.sni}`);
+                        if (config.alpn) params.push(`alpn=${config.alpn}`);
+                        if (config.type) params.push(`type=${config.type}`);
+                        if (config.path) params.push(`path=${config.path}`);
+                        if (config.host) params.push(`host=${config.host}`);
+                    }
+
+                    if (params.length > 0) {
+                        newLink += '?' + params.join('&');
+                    }
+
+                    // 添加备注
+                    if (config.remarks) {
+                        newLink += '#' + config.remarks + '_' + newIp;
+                    }
+
+                    return newLink;
+                }
+                return null;
+            }
+
+            // 验证IP地址格式
+            function isValidIp(ip) {
+                const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+                const domainRegex = /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+                return ipv4Regex.test(ip) || domainRegex.test(ip);
+            }
+
+            // 为原始链接文本域添加自动调整高度功能
+            const originalLinkTextarea = document.getElementById('original-link');
+            const adjustHeight = () => {
+                originalLinkTextarea.style.height = 'auto';
+                originalLinkTextarea.style.height = (originalLinkTextarea.scrollHeight) + 'px';
+            };
+
+            originalLinkTextarea.addEventListener('input', adjustHeight);
+            originalLinkTextarea.addEventListener('change', adjustHeight);
+
+            // 为原始链接文本域添加粘贴事件监听器，确保粘贴后横向滚动条在最左侧
+            originalLinkTextarea.addEventListener('paste', function () {
+                // 使用setTimeout确保在粘贴操作完成后执行
+                setTimeout(function () {
+                    originalLinkTextarea.scrollLeft = 0;
+                }, 0);
+            });
+
+            // 生成按钮功能
+            generateBtn.addEventListener('click', () => {
+                try {
+                    const originalLinks = originalLinkInput.value.trim().split('\n').filter(link => link.trim() !== '');
+                    const cfIpsText = cfIpsTextarea.value.trim();
+
+                    if (originalLinks.length === 0) {
+                        showToast('请输入原始链接');
+                        return;
+                    }
+
+                    if (!cfIpsText) {
+                        showToast('请输入优选CFIP');
+                        return;
+                    }
+
+                    // 解析CF IP列表
+                    const cfIps = cfIpsText.split('\n')
+                        .map(ip => ip.trim().split(':')[0])
+                        .filter(ip => ip && isValidIp(ip));
+
+                    if (cfIps.length === 0) {
+                        showToast('没有有效的IP地址');
+                        return;
+                    }
+
+                    // 生成新节点链接
+                    const newNodes = [];
+                    for (const originalLink of originalLinks) {
+                        try {
+                            // 解析原始链接
+                            const parsedConfig = parseV2RayLink(originalLink);
+
+                            // 为每个IP生成新节点
+                            for (const ip of cfIps) {
+                                const newLink = generateNewLink(parsedConfig, ip);
+                                if (newLink) {
+                                    newNodes.push(newLink);
+                                }
+                            }
+                        } catch (linkError) {
+                            showToast(`解析链接失败: ${linkError.message}`);
+                            console.error(`解析链接失败: ${originalLink}`, linkError);
+                            // 继续处理其他链接
+                        }
+                    }
+
+                    // 显示结果
+                    newNodesTextarea.value = newNodes.join('\n');
+                    showToast(`成功生成 ${newNodes.length} 个节点`);
+
+                } catch (error) {
+                    showToast('错误: ' + error.message);
+                    console.error(error);
+                }
+            });
+        </script>
+    </body>
+
+</html>
