@@ -10,11 +10,6 @@
         header_up X-Forwarded-For {remote}
         header_up X-Forwarded-Proto {scheme}
     }
-    reverse_proxy /vmess-tcp 127.0.0.1:1081 {
-        header_up Host {host}
-        header_up X-Real-IP {remote}
-        header_up X-Forwarded-For {remote}
-        header_up X-Forwarded-Proto {scheme}
-    }
+
 
 }
