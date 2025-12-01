@@ -36,4 +36,5 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository }}:rtian-${{ env.DATE_TAG }}
+            ghcr.io/${{ github.repository }}:rtian
             ghcr.io/${{ github.repository }}:latest
