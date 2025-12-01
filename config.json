@@ -17,33 +17,6 @@
           "path": "/vmess-ws"
         }
       }
-    },
-    {
-        "port": 1081,
-        "protocol": "vmess",
-        "settings": {
-            "clients": [
-                {
-                    "id": "96b785ec-3f7e-4602-8877-6e77839ef79c"
-                }
-            ]
-        },
-        "streamSettings": {
-            "network": "tcp",
-            "security": "tls",
-            "tlsSettings": {
-                "path":"/vmess-tcp",
-              "alpn": [
-				"http/1.1"
-			],
-			"certificates": [
-				{
-					"certificateFile": "/etc/v2ray/server.crt",
-					"keyFile": "/etc/v2ray/server.key"
-				}
-			]
-            }
-        }
     }
   ],
   "outbounds": [
