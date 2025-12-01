@@ -4,12 +4,17 @@
         root /usr/share/caddy
     }
 
-    reverse_proxy /vless 127.0.0.1:1080 {
+    reverse_proxy /vmess-ws 127.0.0.1:1080 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
         header_up X-Forwarded-Proto {scheme}
-    
+    }
+    reverse_proxy /vmess-tcp 127.0.0.1:1081 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
     }
 
 }
