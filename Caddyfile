@@ -1,0 +1,15 @@
+:80 {
+  
+    file_server {
+        root /usr/share/caddy
+    }
+
+    reverse_proxy /vless 127.0.0.1:1080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    
+    }
+
+}
