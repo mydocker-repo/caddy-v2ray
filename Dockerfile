@@ -16,3 +16,4 @@ RUN chmod 755 /entrypoint.sh
 # 最终命令：启动 cron 并给 shell
 ENTRYPOINT ["/entrypoint.sh"]
 
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
