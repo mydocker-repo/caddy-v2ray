@@ -43,13 +43,16 @@ cat <<EOF > /etc/v2ray/config.json
 }
 EOF
 
-
+ADDRESS=$DOMAIN
+if [[ $DOMAIN != *railway.app ]];then 
+ ADDRESS="ip.sb"
+fi
 VMESS=$(
 cat <<EOF |base64 |tr -d '\n'
 {
   "v": "2",
   "ps": "${TITLE}",
-  "add": "$DOMAIN",
+  "add": "$ADDRESS",
   "port": "443",
   "id": "$UUID",
   "aid": "0",
