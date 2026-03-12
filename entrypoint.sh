@@ -1,18 +1,17 @@
 #!/bin/sh
 # entrypoint.sh
-nohup v2ray run -c /etc/v2ray/config.json >/dev/null 2>&1 &
-echo "V2ray 已经运行。。。"
-sleep 5
-nohup caddy run -c /etc/caddy/Caddyfile  --adapter caddyfile >/dev/null 2>&1 &
-echo "Caddy 已经运行。。。"
+env
 
 # 使用环境变量生成新的配置文件
 if [ -z "$DOMAIN" ]; then
-	DOMAIN=$(printenv|grep _80_DOMAIN|cut -d"=" -f2)
+ DOMAIN=$RAILWAY_PUBLIC_DOMAIN
 fi
 if [ -z "$UUID" ]; then
-	UUID='6e7e4fc7-198e-4f17-8bbf-0dacfc8f8d4d'
+ UUID='6e7e4fc7-198e-4f17-8bbf-0dacfc8f8d4d'
 fi
+REGION=$(echo $RAILWAY_REPLICA_REGION |cut -d'-' -f1,2)
+NAME=$(echo $DOMAIN |cut -d'.' -f1)
+TITLE="${NAME}-${REGION}"
 
 cat <<EOF > /etc/v2ray/config.json
 {
@@ -49,7 +48,7 @@ VMESS=$(
 cat <<EOF |base64 |tr -d '\n'
 {
   "v": "2",
-  "ps": "$DOMAIN",
+  "ps": "${TITLE}",
   "add": "$DOMAIN",
   "port": "443",
   "id": "$UUID",
@@ -84,6 +83,12 @@ echo "https://$DOMAIN/$UUID.html"
 echo ""
 echo "vmess://$VMESS"
 echo
+
+nohup v2ray run -c /etc/v2ray/config.json >/dev/null 2>&1 &
+echo "V2ray 已经运行。。。"
+sleep 5
+nohup caddy run -c /etc/caddy/Caddyfile  --adapter caddyfile >/dev/null 2>&1 &
+echo "Caddy 已经运行。。。"
 
 
 # 执行传入的命令（通常是 crond -f）
