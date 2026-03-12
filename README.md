@@ -9,7 +9,7 @@
 
 ## 使用Cloudflare 进行反代
 > 创建Workers
-> 
+> 添加自定义域名或路由  
 ```
 export default {
     async fetch(request, env) {
