@@ -332,7 +332,7 @@
                     }
                 } else if (link.startsWith('trojan://')) {
                     // Trojan链接格式：trojan://password@host:port?query_parameters#remarks
-                    const data = link.substring(8);
+                    const data = link.substring(9);
                     try {
                         // 解析基本信息
                         const [credentials, rest] = data.split('@');
