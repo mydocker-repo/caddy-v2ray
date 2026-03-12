@@ -77,8 +77,14 @@ cat <<EOF >"/usr/share/caddy/$UUID.html"
 vmess://$VMESS
 
 </pre>
-<a href="/addCFIP.html">CF域名：CFIP扩展节点</a>
+
 EOF
+
+if [[ $DOMAIN != *railway.app ]];then 
+  cat <<EOF >>"/usr/share/caddy/$UUID.html"
+  <a href="/addCFIP.html">CF域名：CFIP扩展节点</a>
+  EOF
+fi
 
 echo
 echo "访问:"
