@@ -6,6 +6,9 @@ env
 if [ -z "$DOMAIN" ]; then
  DOMAIN=$RAILWAY_PUBLIC_DOMAIN
 fi
+if [ -z "$DOMAIN" ]; then
+ DOMAIN=$ZEABUR_WEB_DOMAIN
+fi
 if [ -z "$UUID" ]; then
  UUID='6e7e4fc7-198e-4f17-8bbf-0dacfc8f8d4d'
 fi
@@ -80,7 +83,7 @@ vmess://$VMESS
 
 EOF
 
-if [[ $DOMAIN != *railway.app ]];then 
+if [[ $DOMAIN != *railway.app && $DOMAIN != *zeabur.app ]];then 
   cat <<EOF >>"/usr/share/caddy/$UUID.html"
   <a href="/addCFIP.html">CF域名：CFIP扩展节点</a>
   EOF
