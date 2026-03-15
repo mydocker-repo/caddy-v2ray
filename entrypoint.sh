@@ -47,7 +47,7 @@ cat <<EOF > /etc/v2ray/config.json
 EOF
 
 ADDRESS=$DOMAIN
-if [[ $DOMAIN != *railway.app ]];then 
+if [[ $DOMAIN != *railway.app && $DOMAIN != *zeabur.app ]];then 
  ADDRESS="ip.sb"
 fi
 VMESS=$(
